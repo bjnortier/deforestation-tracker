@@ -1,0 +1,24 @@
+{
+  "name": "biomass_tracking",
+  "version": "1.0.0",
+  "description": "Biomass tracking over time with NDVI",
+  "main": "index.js",
+  "scripts": {
+    "test": "",
+    "start": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bjnortier/biomass_tracking.git"
+  },
+  "author": "Ben Nortier <ben@bjnortier.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bjnortier/biomass_tracking/issues"
+  },
+  "homepage": "https://github.com/bjnortier/biomass_tracking#readme",
+  "dependencies": {
+    "hdf5": "^0.3.5",
+    "pngjs": "^3.3.3"
+  }
+}
