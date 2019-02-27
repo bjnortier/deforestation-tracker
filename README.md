@@ -80,3 +80,13 @@ $ data get https://datahub.io/core/geo-countries
 $ data info core/geo-countries
 $ tree core/geo-countries
 ```
+
+## Set up env
+
+MAPBOX token
+
+## Run app
+
+```
+$ npm run start
+```

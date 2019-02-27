@@ -42,7 +42,6 @@ module.exports = {
           }
         ],
         include: [
-          fs.realpathSync(path.resolve(__dirname)),
           fs.realpathSync(path.resolve(__dirname, 'src'))
         ]
       },

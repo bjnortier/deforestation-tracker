@@ -23,6 +23,7 @@
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-map-gl": "^4.0.12",
+    "react-resize-detector": "^3.4.0",
     "styled-components": "^4.1.3"
   },
   "devDependencies": {
