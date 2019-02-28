@@ -90,3 +90,7 @@ MAPBOX token
 ```
 $ npm run start
 ```
+
+Convert KNP
+http://dataknp.sanparks.org/sanparks/metacat
+https://mapshaper.org/

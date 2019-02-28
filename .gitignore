@@ -1,5 +1,6 @@
 .DS_Store
-resources/PV_S10_TOC_NDVI_20190211_1KM_V101/
+resources/
 core/
+static/KNP/
 node_modules/
 .env

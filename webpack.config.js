@@ -54,7 +54,7 @@ module.exports = {
         use: ['url-loader']
       },
       {
-        test: /\.(geojson)$/i,
+        test: /\.(geojson|json)$/i,
         use: ['json-loader']
       }
     ]
