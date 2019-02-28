@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import styled from 'styled-components'
 
-import ProbaVMap from './ProbaVMap'
+import ProbaVMap from './ProbaVMap2'
 
 const FullScreen = styled.div`
   position: absolute;

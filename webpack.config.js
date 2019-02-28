@@ -52,6 +52,10 @@ module.exports = {
       {
         test: /\.(gif|png|jpe?g|svg)$/i,
         use: ['url-loader']
+      },
+      {
+        test: /\.(geojson)$/i,
+        use: ['json-loader']
       }
     ]
   }
