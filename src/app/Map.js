@@ -4,7 +4,6 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import PropTypes from 'prop-types'
 import ReactResizeDetector from 'react-resize-detector'
 
-const tiles = ['X21Y09', 'X21Y10']
 const knpBoundary = require('../geojson/knp_boundary.geojson')
 
 class Map extends Component {
@@ -33,25 +32,26 @@ class Map extends Component {
   }
 
   componentDidMount () {
-    const { directories } = this.props
+    const { site } = this.props
     const map = this.getMap()
     map.on('load', data => {
-      for (let j = 0; j < directories.length; ++j) {
-        const directory = directories[j]
-        for (let i = 0; i < tiles.length; ++i) {
-          const tile = tiles[i]
-          const [left, right, top, bottom] = tile === 'X21Y09'
-            ? [30, 40, -15, -25]
-            : [30, 40, -25, -35]
-          const id = `${directory}/${tile}`
+      const dates = Object.keys(site)
+      for (let j = 0; j < dates.length; ++j) {
+        const date = dates[j]
+        const tilesMeta = site[date].tilesMeta
+        const tileNames = Object.keys(tilesMeta)
+        for (let i = 0; i < tileNames.length; ++i) {
+          const tileName = tileNames[i]
+          const tileMeta = tilesMeta[tileName]
+          const id = `${date}/${tileName}`
           map.addSource(id, {
             'type': 'image',
-            'url': `/static/KNP/${directory}/${tile}.png`,
+            'url': `/static/KNP/${date}/${tileName}.png`,
             'coordinates': [
-              [left, top],
-              [right, top],
-              [right, bottom],
-              [left, bottom]
+              tileMeta.topLeft,
+              tileMeta.topRight,
+              tileMeta.bottomRight,
+              tileMeta.bottomLeft
             ]
           })
           map.addLayer({
@@ -80,7 +80,7 @@ class Map extends Component {
         },
         layout: {},
         paint: {
-          'line-color': '#fbff0a',
+          'line-color': '#ff7f0e',
           'line-width': 2
         }
       })
@@ -89,18 +89,18 @@ class Map extends Component {
   }
 
   render () {
-    const { directories, currentIndex } = this.props
+    const { site, currentDate } = this.props
     const { viewport, styleLoaded } = this.state
     if (styleLoaded) {
       const map = this.getMap()
-      directories.forEach((dir, i) => {
-        if (currentIndex === i) {
-          map.setLayoutProperty(`${dir}/X21Y09`, 'visibility', 'visible')
-          map.setLayoutProperty(`${dir}/X21Y10`, 'visibility', 'visible')
-        } else {
-          map.setLayoutProperty(`${dir}/X21Y09`, 'visibility', 'none')
-          map.setLayoutProperty(`${dir}/X21Y10`, 'visibility', 'none')
-        }
+      Object.keys(site).forEach((date, i) => {
+        Object.keys(site[date].tilesMeta).forEach(tileName => {
+          if (date === currentDate) {
+            map.setLayoutProperty(`${date}/${tileName}`, 'visibility', 'visible')
+          } else {
+            map.setLayoutProperty(`${date}/${tileName}`, 'visibility', 'none')
+          }
+        })
       })
     }
     return <ReactResizeDetector
@@ -129,8 +129,8 @@ class Map extends Component {
 }
 
 Map.propTypes = {
-  directories: PropTypes.array.isRequired,
-  currentIndex: PropTypes.number.isRequired
+  site: PropTypes.object.isRequired,
+  currentDate: PropTypes.string.isRequired
 }
 
 export default Map

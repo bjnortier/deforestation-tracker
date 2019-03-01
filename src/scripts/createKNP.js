@@ -12,9 +12,9 @@ const h5lt = hdf5Lib.h5lt
 const knpBoundary = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'geojson', 'knp_boundary.geojson'), 'utf-8'))
 
 const create = (hdf5SourceDir, outputDir, date) => {
-  const accumulatedNDVIFilename = 'accumulated.json'
   let accumulatedNDVI = 0
   let numberOfPixels = 0
+  let tilesMeta = {}
   fs
     .readdirSync(hdf5SourceDir)
     .filter(hdf5Filename => /.hdf5$/.exec(hdf5Filename))
@@ -27,7 +27,7 @@ const create = (hdf5SourceDir, outputDir, date) => {
       const match = /PROBAV_S10_TOC_X([0-9]{2})Y([0-9]{2})_[0-9]{8}_1KM_NDVI_V10[12]{1}.hdf5/.exec(hdf5Filename)
       const xTile = match[1]
       const yTile = match[2]
-      const outputFilenameBase = `X${xTile}Y${yTile}`
+      const tileName = `X${xTile}Y${yTile}`
 
       const geometry = file.openGroup('LEVEL3/GEOMETRY')
       geometry.refresh()
@@ -37,12 +37,9 @@ const create = (hdf5SourceDir, outputDir, date) => {
         bottomRight: [geometry.BOTTOM_RIGHT_LONGITUDE, geometry.BOTTOM_RIGHT_LATITUDE],
         topRight: [geometry.TOP_RIGHT_LONGITUDE, geometry.TOP_RIGHT_LATITUDE]
       }
-      const metaFilename = `${outputFilenameBase}.meta.json`
-      const metaPath = path.join(outputDir, metaFilename)
-      fs.writeFileSync(metaPath, JSON.stringify(meta), 'utf-8')
-      console.log('>>', date, metaFilename)
+      tilesMeta[tileName] = meta
 
-      const pngFilename = `${outputFilenameBase}.png`
+      const pngFilename = `${tileName}.png`
       const pngPath = path.join(outputDir, pngFilename)
       var png = new PNG({
         width: lons.length,
@@ -86,26 +83,24 @@ const create = (hdf5SourceDir, outputDir, date) => {
       const buffer = PNG.sync.write(png)
       fs.writeFileSync(pngPath, buffer)
     })
-  const accPath = path.join(outputDir, accumulatedNDVIFilename)
-  fs.writeFileSync(accPath, JSON.stringify({ accumulatedNDVI, numberOfPixels }), 'utf-8')
-  console.log('>>', accumulatedNDVIFilename)
+  return { tilesMeta, accumulatedNDVI, numberOfPixels }
 }
 
 const orderPath = path.join(__dirname, '..', '..', 'resources', 'C0177822')
 const outputPath = path.join(__dirname, '..', '..', 'static', 'KNP')
 rimraf.sync(outputPath)
-const dates = fs
+const siteDB = fs
   .readdirSync(orderPath)
   .map(directory => {
     const match = /PV_S10_TOC_NDVI_([0-9]{8})_1KM_V10[12]{1}/.exec(directory)
     return [directory, match[1]]
   })
-  .map(([directory, date]) => {
+  .reduce((acc, [directory, date]) => {
     const outputDir = path.join(outputPath, date)
     rimraf.sync(outputDir)
     fs.mkdirSync(outputDir, { recursive: true })
-    create(path.join(orderPath, directory), outputDir, date)
-    return date
-  })
-
-fs.writeFileSync(path.join(outputPath, 'dates.json'), JSON.stringify(dates), 'utf-8')
+    const meta = create(path.join(orderPath, directory), outputDir, date)
+    acc[date] = meta
+    return acc
+  }, {})
+fs.writeFileSync(path.join(outputPath, 'site.json'), JSON.stringify(siteDB), 'utf-8')
