@@ -93,7 +93,7 @@ class App extends Component {
           width={width || 400}
           height={200}
           title={`Accumulated NDVI`}
-          periodLabel='1mo'
+          periodLabel='7y'
           onHover={hoverInfo => this.setState({ currentIndex: hoverInfo.xIndex })}
         />}
       </ReactResizeDetector></GraphContainer>
