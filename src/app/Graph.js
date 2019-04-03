@@ -12,16 +12,8 @@ export default ({ siteData, dates, onHover }) => {
   })
   const yValues = dates.map(date => siteData[date].accumulatedNDVI / 1e6)
   const graphData = {
-    x: {
-      label: 't',
-      values: xValues
-    },
-    y: [
-      {
-        label: 'Acc. NDVI',
-        values: yValues
-      }
-    ]
+    x: { label: 't', values: xValues },
+    y: [{ label: 'Acc. NDVI', values: yValues }]
   }
   return <ReactResizeDetector handleWidth>
     {(width, height) => <TimeXScalarYGraph

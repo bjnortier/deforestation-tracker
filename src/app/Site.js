@@ -6,18 +6,6 @@ import Map from './Map'
 import Graph from './Graph'
 import { FullScreen, MapContainer, GraphContainer } from './layout'
 
-const httpGet = (path) => {
-  return fetch(path, {
-    credentials: 'same-origin',
-    headers: {
-      'Accept': 'application/json'
-    }
-  })
-    .then(response => {
-      return Promise.all([response.status, response.json()])
-    })
-}
-
 class Site extends Component {
   constructor (props) {
     super(props)
@@ -29,7 +17,15 @@ class Site extends Component {
   }
 
   componentDidMount () {
-    httpGet(`/static/${this.props.id}/site.json`)
+    fetch(`/static/KNP/site.json`, {
+      credentials: 'same-origin',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+      .then(response => {
+        return Promise.all([response.status, response.json()])
+      })
       .then(([status, json]) => {
         if (status === 200) {
           this.setState({
@@ -68,10 +64,6 @@ class Site extends Component {
       </FullScreen>
     }
   }
-}
-
-Site.propTypes = {
-  id: PropTypes.string.isRequired
 }
 
 export default Site

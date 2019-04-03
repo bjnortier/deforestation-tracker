@@ -18,4 +18,4 @@ const GlobalStyle = createGlobalStyle`
   }
 `
 
-render(<div><GlobalStyle /><Site id='KNP' /></div>, document.getElementById('contents'))
+render(<div><GlobalStyle /><Site /></div>, document.getElementById('contents'))
