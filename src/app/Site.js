@@ -63,6 +63,7 @@ class Site extends Component {
         <GraphContainer><Graph
           siteData={site.data}
           dates={dates}
+          onHover={hoverInfo => this.setState({ currentIndex: hoverInfo.xIndex })}
         /></GraphContainer>
       </FullScreen>
     }

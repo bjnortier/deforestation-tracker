@@ -4,20 +4,17 @@ const fs = require('fs')
 const opn = require('opn')
 
 const port = 7333
+const mode = process.env.NODE_ENV || 'development'
 
-module.exports = {
-  mode: 'development',
+const config = {
+  mode,
   entry: {
-    'index': [
-      `webpack-dev-server/client?http://localhost:${port}`,
-      'webpack/hot/dev-server',
-      path.resolve(__dirname, 'src', 'app', 'index')
-    ]
+    'index': [path.resolve(__dirname, 'src', 'app', 'index')]
   },
   output: {
-    path: path.resolve(__dirname, 'bundles'),
+    path: path.resolve(__dirname, 'static', 'bundles'),
     filename: '[name].bundle.js',
-    publicPath: 'bundles/'
+    publicPath: '/static/bundles/'
   },
   devServer: {
     port,
@@ -26,7 +23,6 @@ module.exports = {
     }
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new webpack.EnvironmentPlugin(['MAPBOX_TOKEN'])
   ],
   resolve: {
@@ -60,3 +56,18 @@ module.exports = {
     ]
   }
 }
+
+if (mode === 'development') {
+  config.entry.index.unshift('webpack/hot/dev-server')
+  config.entry.index.unshift(`webpack-dev-server/client?http://localhost:${port}`)
+  config.plugins.push(new webpack.HotModuleReplacementPlugin())
+  config.devServer = {
+    port,
+    historyApiFallback: true,
+    after: (app, server) => {
+      opn(`http://localhost:${port}/`, { app: 'google chrome' })
+    }
+  }
+}
+
+module.exports = config

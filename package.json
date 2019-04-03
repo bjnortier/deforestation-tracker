@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "standard",
     "start": "source .env && webpack-dev-server",
-    "build": "rimraf build && source .env && NODE_ENV=production webpack && mkdir -p build/static && cp -r static/* build/static && cp index.html build/",
+    "build": "rimraf build && NODE_ENV=production webpack && mkdir -p build/static && cp -r static/* build/static && cp index.html build/",
     "now-build": "npm run build"
   },
   "repository": {
