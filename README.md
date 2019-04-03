@@ -7,7 +7,7 @@
 - ProbaV HDF5 files
 - HDF5
 
-## Get the ProbaV HDF5 files
+## Get the Proba-V HDF5 files
 
 The Terms of User prohibits me from posting the data files to a network so you'll unfortunately have to copy them yourself.
 

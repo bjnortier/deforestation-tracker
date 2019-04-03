@@ -1,10 +1,10 @@
 {
-  "name": "biomass_tracking",
+  "name": "deforestation-tracker",
   "version": "1.0.0",
-  "description": "Biomass tracking over time with NDVI",
+  "description": "Deforestation Tracker",
   "main": "index.js",
   "scripts": {
-    "test": "",
+    "lint": "standard",
     "start": "source .env && webpack-dev-server"
   },
   "repository": {

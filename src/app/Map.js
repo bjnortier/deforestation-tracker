@@ -4,7 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import PropTypes from 'prop-types'
 import ReactResizeDetector from 'react-resize-detector'
 
-const knpBoundary = require('../geojson/knp_boundary.geojson')
+import Progress from './Progress'
 
 class Map extends Component {
   constructor (props) {
@@ -34,11 +34,12 @@ class Map extends Component {
   componentDidMount () {
     const { site } = this.props
     const map = this.getMap()
+    let imageCount = 0
     map.on('load', data => {
-      const dates = Object.keys(site)
+      const dates = Object.keys(site.data)
       for (let j = 0; j < dates.length; ++j) {
         const date = dates[j]
-        const tilesMeta = site[date].tilesMeta
+        const tilesMeta = site.data[date].tilesMeta
         const tileNames = Object.keys(tilesMeta)
         for (let i = 0; i < tileNames.length; ++i) {
           const tileName = tileNames[i]
@@ -54,6 +55,7 @@ class Map extends Component {
               tileMeta.bottomLeft
             ]
           })
+          ++imageCount
           map.addLayer({
             id,
             source: id,
@@ -75,7 +77,7 @@ class Map extends Component {
           type: 'geojson',
           data: {
             type: 'Feature',
-            geometry: knpBoundary.features[0].geometry
+            geometry: site.boundary.features[0].geometry
           }
         },
         layout: {},
@@ -84,17 +86,26 @@ class Map extends Component {
           'line-width': 2
         }
       })
-      this.setState({ styleLoaded: true })
+      this.setState({ styleLoaded: true, imageCount, imagesLoaded: false })
+    })
+    let loadedImageCount = 0
+    map.on('sourcedata', data => {
+      if (data.source.type === 'image' && data.sourceDataType === 'content') {
+        ++loadedImageCount
+        if (loadedImageCount === this.state.imageCount) {
+          this.setState({ imagesLoaded: true })
+        }
+      }
     })
   }
 
   render () {
     const { site, currentDate } = this.props
-    const { viewport, styleLoaded } = this.state
-    if (styleLoaded) {
+    const { viewport, styleLoaded, imagesLoaded } = this.state
+    if (imagesLoaded && styleLoaded) {
       const map = this.getMap()
-      Object.keys(site).forEach((date, i) => {
-        Object.keys(site[date].tilesMeta).forEach(tileName => {
+      Object.keys(site.data).forEach((date, i) => {
+        Object.keys(site.data[date].tilesMeta).forEach(tileName => {
           if (date === currentDate) {
             map.setLayoutProperty(`${date}/${tileName}`, 'visibility', 'visible')
           } else {
@@ -103,28 +114,31 @@ class Map extends Component {
         })
       })
     }
-    return <ReactResizeDetector
-      handleWidth
-      handleHeight
-      refreshMode='throttle'
-      refreshRate={500}
-    >
-      {(width, height) => <ReactMapGL
-        ref={this.mapRef}
-        mapboxApiAccessToken={process.env.MAPBOX_TOKEN}
-        {...viewport}
-        width={width}
-        height={height}
-        mapStyle='mapbox://styles/4v-e/cjsket4mh0ty11foda52iviad'
-        onViewportChange={this.handleViewportChange}
+    return <>
+      {imagesLoaded ? null : <Progress />}
+      <ReactResizeDetector
+        handleWidth
+        handleHeight
+        refreshMode='throttle'
+        refreshRate={500}
       >
-        <div style={{ position: 'absolute', right: 16, top: 16 }}>
-          <NavigationControl
-            onViewportChange={this.handleViewportChange}
-          />
-        </div>
-      </ReactMapGL>}
-    </ReactResizeDetector>
+        {(width, height) => <ReactMapGL
+          ref={this.mapRef}
+          mapboxApiAccessToken={process.env.MAPBOX_TOKEN}
+          {...viewport}
+          width={width}
+          height={height}
+          mapStyle='mapbox://styles/4v-e/cjsket4mh0ty11foda52iviad'
+          onViewportChange={this.handleViewportChange}
+        >
+          <div style={{ position: 'absolute', right: 16, top: 16 }}>
+            <NavigationControl
+              onViewportChange={this.handleViewportChange}
+            />
+          </div>
+        </ReactMapGL>}
+      </ReactResizeDetector>
+    </>
   }
 }
 

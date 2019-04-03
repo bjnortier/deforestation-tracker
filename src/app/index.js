@@ -18,13 +18,4 @@ const GlobalStyle = createGlobalStyle`
   }
 `
 
-// const MapContainer = styled.div`
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   bottom: 200px;
-// `
-
-
 render(<div><GlobalStyle /><Site id='KNP' /></div>, document.getElementById('contents'))
