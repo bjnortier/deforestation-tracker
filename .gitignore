@@ -3,4 +3,6 @@ resources/
 core/
 static/KNP/
 node_modules/
+build/
+bundles/
 .env

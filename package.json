@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "lint": "standard",
-    "start": "source .env && webpack-dev-server"
+    "start": "source .env && webpack-dev-server",
+    "build": "rimraf build && source .env && NODE_ENV=production webpack && mkdir -p build/static && cp -r static/* build/static && cp index.html build/",
+    "now-build": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -19,7 +21,6 @@
   "homepage": "https://github.com/bjnortier/biomass_tracking#readme",
   "dependencies": {
     "@turf/boolean-point-in-polygon": "^6.0.1",
-    "hdf5": "^0.3.5",
     "isomorphic-fetch": "^2.2.1",
     "pngjs": "^3.3.3",
     "react": "^16.5.2",
