@@ -12,9 +12,9 @@ const config = {
     'index': [path.resolve(__dirname, 'src', 'app', 'index')]
   },
   output: {
-    path: path.resolve(__dirname, 'static', 'bundles'),
+    path: path.resolve(__dirname, 'static', 'js'),
     filename: '[name].bundle.js',
-    publicPath: '/static/bundles/'
+    publicPath: '/static/js/'
   },
   devServer: {
     port,
