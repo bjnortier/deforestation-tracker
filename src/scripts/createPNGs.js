@@ -53,11 +53,10 @@ module.exports = (knpBoundary, resourcePath, hdf5Directory, date, datumPath) => 
        *    The blue & red channels are kept at zero.
        * 2. Some NDVI values are null so opacity is 0
        *    for those values.
-       * 3. Check each pixel for containment in within
+       * 3. Check each pixel for containment within
        *    the geographic boundary, ignore if outside.
        *    If the pixel is inside the boundary,
        *    accumulate it's value.
-       *
        */
       const pngFilename = `${tileName}.png`
       const pngPath = path.join(datumPath, pngFilename)
@@ -99,7 +98,7 @@ module.exports = (knpBoundary, resourcePath, hdf5Directory, date, datumPath) => 
           }
         }
       }
-      // Progress loggin
+      // Progress logging
       process.stdout.cursorTo(0)
       console.log('>>', date, pngFilename)
 
